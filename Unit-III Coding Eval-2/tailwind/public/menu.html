@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Home/Food</title>
+  </head>
+  <body>
+    <navbar id="navbar1"></navbar>
+
+    <div id="food" class="grid grid-cols-3"></div>
+  </body>
+</html>
+<script type="module">
+    ////////nav bar import///////////////////////
+  import navbar from "./script/navbar.js";
+
+  let navbar1 = document.getElementById("navbar1");
+  navbar1.innerHTML = navbar();
+
+ 
+
+
+
+
+  ////////////////////appending data////////////////
+
+  async function product() {
+    let data = await fetch(
+      "http://www.themealdb.com/api/json/v1/1/categories.php"
+    );
+    let data1 = await data.json();
+    let data2=data1.categories;
+    console.log(data2);
+     showProduct(data2);
+  }
+  var item1 = document.getElementById("food");
+  function showProduct(data2) {
+  
+    // items.innerHTML =null
+    data2.forEach((d) => {
+        console.log(d);
+      let div1 = document.createElement("div");
+      let image = document.createElement("img");
+      let name = document.createElement("h3");
+      name.style.textAlign="center";
+      image.style.alignSelf="center";
+      let btn= document.createElement("button")
+      btn.innerHTML = "Add to Cart";
+      btn.addEventListener("click",()=>{
+         add(d)
+      })
+      image.src = d.strCategoryThumb;
+
+      name.innerText = d.strCategory;
+
+      div1.append(image, name,btn);
+     item1.append(div1);
+    });
+  };
+
+
+  if(localStorage.getItem("cart")==undefined){
+    localStorage.setItem("cart",JSON.stringify([]))
+}
+
+function add(d){
+
+let cart1=JSON.parse(localStorage.getItem("cart"))
+
+cart1.push(d);
+localStorage.setItem("cart",JSON.stringify(cart1))
+
+};
+
+
+  product();
+</script>
